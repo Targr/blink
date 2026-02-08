@@ -1,0 +1,34 @@
+--- blinkbreathe_control_sync.pbl	original
++++ blinkbreathe_control_sync.pbl	modified
+@@
+    gResponseType <- gParams.responsetype
+
+    Initialize()
+
++   ############################################################
++   ## START EXTERNAL JAW/BLINK LOGGER (no webcam display)
++   ############################################################
++   ## Launch in background
++   if(GetSystemType()=="OSX" or GetSystemType()=="LINUX")
++   {
++       SystemCall("python3 blink_jaw_nodisplay.py &","")
++   } else {
++       SystemCall("start /min python blink_jaw_nodisplay.py","")
++   }
+
+    if(gSubNum +""=="0")
+@@
+    FilePrint(gLog, gSubNum + "," + gLanguage + "," + TimeStamp()+","+"COLOR STROOP,"+gResponseType+",ENDED")
+
++   ############################################################
++   ## STOP LOGGER WHEN EXPERIMENT FINISHES
++   ############################################################
++   if(GetSystemType()=="OSX" or GetSystemType()=="LINUX")
++   {
++       SystemCall("pkill -f blink_jaw_nodisplay.py","")
++   } else {
++       SystemCall("taskkill /IM python.exe /F","")
++   }
+
+    MessageBox(gExitText,gWin)
+ }
